@@ -1,9 +1,9 @@
 """
-App Web Móvil para Conductores - Control de Flota (v2.6)
-- Control de acceso por PIN de seguridad (uso privado restringido)
-- Conexión optimizada para redes móviles 4G/5G y Local
-- Soporte dual: Streamlit Secrets (Nube) y DEFAULT_DB_URL (Local)
-- Registro completo: Kilómetros, Taller y Averías en tiempo real
+App Web Móvil para Conductores - Control de Flota (v2.7 Seguridad Total)
+- PIN de acceso protegido y gestionado vía Streamlit Secrets
+- Credenciales de base de datos cifradas en Secrets
+- Optimizado para redes móviles 4G/5G y Local
+- Sincronización en tiempo real con Supabase
 """
 
 import streamlit as st
@@ -12,15 +12,15 @@ import datetime
 
 # --- CONFIGURACIÓN DE PÁGINA MÓVIL ---
 st.set_page_config(
-    page_title="Flota - Móvil v2.6",
+    page_title="Flota - Móvil v2.7",
     page_icon="🚛",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# --- CONTROL DE ACCESO (PIN DE SEGURIDAD PRIVADO) ---
-# Puedes cambiar este PIN de 4 dígitos por el que prefieras para tu empresa:
-PIN_ACCESO_CORRECTO = "2026"
+# --- CONTROL DE ACCESO (PIN LEÍDO DESDE SECRETS CIFRADOS) ---
+# Si no está configurado en Secrets, por defecto pedirá '0000'
+PIN_ACCESO_CORRECTO = st.secrets.get("PIN_ACCESO", "0000") if hasattr(st, "secrets") else "0000"
 
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -28,22 +28,21 @@ if "autenticado" not in st.session_state:
 if not st.session_state.autenticado:
     st.markdown("<br>", unsafe_allow_html=True)
     st.title("🚛 Control de Flota")
-    st.caption("Acceso restringido a personal autorizado (v2.6)")
+    st.caption("Acceso restringido a personal autorizado (v2.7)")
     
     with st.form("form_login_seguro"):
         pin_ingresado = st.text_input("Introduce el PIN de acceso:", type="password", max_chars=8)
         btn_entrar = st.form_submit_button("Entrar al Sistema", type="primary", use_container_width=True)
         
         if btn_entrar:
-            if pin_ingresado == PIN_ACCESO_CORRECTO:
+            if pin_ingresado == str(PIN_ACCESO_CORRECTO):
                 st.session_state.autenticado = True
                 st.rerun()
             else:
                 st.error("⚠️ PIN incorrecto. Acceso denegado.")
     st.stop()
 
-# --- CONEXIÓN A SUPABASE (DUAL: NUBE SECRETS Y LOCAL) ---
-# PEGA AQUÍ TU ENLACE DE CONEXIÓN DE SUPABASE (Session pooler, puerto 6543):
+# --- CONEXIÓN A SUPABASE (SECRETS EN NUBE / PLANTILLA COMODÍN) ---
 DEFAULT_DB_URL = "postgresql://postgres.tu_usuario:TU_PASSWORD_AQUI@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
 
 def get_connection():
@@ -170,7 +169,7 @@ col_head1, col_head2 = st.columns([3, 1])
 with col_head1:
     st.title("Control de Flota")
 with col_head2:
-    st.markdown("<div style='text-align: right; padding-top: 15px;'><span style='background-color: #0284C7; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;'>v2.6</span></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: right; padding-top: 15px;'><span style='background-color: #0284C7; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;'>v2.7</span></div>", unsafe_allow_html=True)
 
 st.caption("Panel del Conductor (Acceso Seguro 4G/5G)")
 
