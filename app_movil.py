@@ -44,7 +44,7 @@ if not st.session_state.autenticado:
 
 # --- CONEXIÓN A SUPABASE (DUAL: NUBE SECRETS Y LOCAL) ---
 # PEGA AQUÍ TU ENLACE DE CONEXIÓN DE SUPABASE (Session pooler, puerto 6543):
-DEFAULT_DB_URL = "DEFAULT_DB_URL = "postgresql://postgres.tu_usuario:TU_PASSWORD_AQUI@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
+DEFAULT_DB_URL = "postgresql://postgres.tu_usuario:TU_PASSWORD_AQUI@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
 
 def get_connection():
     try:
